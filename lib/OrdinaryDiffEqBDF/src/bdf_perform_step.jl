@@ -1236,7 +1236,7 @@ end
 
 function perform_step!(integrator, cache::FBDFCache{max_order},
         repeat_step = false) where {max_order}
-    @unpack ts, u_history, order, u_corrector, bdf_coeffs, r, nlsolver, weights, terk_tmp, terkp1_tmp, atmp, tmp, equi_ts, u₀, ts_tmp, step_limiter! = cache
+    @unpack ts, u_history, order, u_corrector, bdf_coeffs, r, nlsolver, weights, terk_tmp, terkp1_tmp, atmp, tmp, residual, equi_ts, u₀, ts_tmp, step_limiter! = cache
     @unpack t, dt, u, f, p, uprev = integrator
 
     reinitFBDF!(integrator, cache)
@@ -1313,6 +1313,7 @@ function perform_step!(integrator, cache::FBDFCache{max_order},
         ts_tmp[1] = tdt
         calculate_residuals!(atmp, _vec(terk_tmp), _vec(uprev), _vec(u), abstol, reltol,
             internalnorm, t)
+        residual .= atmp
         integrator.EEst = integrator.opts.internalnorm(atmp, t)
         estimate_terk!(integrator, cache, k + 1, Val(max_order))
         calculate_residuals!(atmp, _vec(terk_tmp), _vec(uprev), _vec(u), abstol, reltol,

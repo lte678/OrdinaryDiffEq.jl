@@ -596,6 +596,7 @@ end
     consfailcnt::Int #consecutive failed step counts
     tmp::uType
     atmp::uNoUnitsType
+    residual::uNoUnitsType
     terkm2::EEstType
     terkm1::EEstType
     terk::EEstType #terk corresponds to hᵏyᵏ(tₙ₊₁)
@@ -649,6 +650,7 @@ function alg_cache(alg::FBDF{MO}, u, rate_prototype, ::Type{uEltypeNoUnits},
     consfailcnt = 0
     t_old = zero(t)
     atmp = similar(u, uEltypeNoUnits)
+    residual = similar(u, uEltypeNoUnits)
     recursivefill!(atmp, zero(uEltypeNoUnits))
     u₀ = similar(u)
     equi_ts = similar(ts)
@@ -657,7 +659,7 @@ function alg_cache(alg::FBDF{MO}, u, rate_prototype, ::Type{uEltypeNoUnits},
     iters_from_event = 0
 
     FBDFCache(fsalfirst, nlsolver, ts, ts_tmp, t_old, u_history, order, prev_order,
-        u_corrector, u₀, bdf_coeffs, Val(5), nconsteps, consfailcnt, tmp, atmp,
+        u_corrector, u₀, bdf_coeffs, Val(5), nconsteps, consfailcnt, tmp, atmp, residual,
         terkm2, terkm1, terk, terkp1, terk_tmp, terkp1_tmp, r, weights, equi_ts,
         iters_from_event, alg.step_limiter!)
 end
