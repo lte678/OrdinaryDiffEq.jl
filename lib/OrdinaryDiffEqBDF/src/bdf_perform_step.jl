@@ -841,7 +841,7 @@ end
 function perform_step!(integrator, cache::QNDFCache{max_order},
         repeat_step = false) where {max_order}
     @unpack t, dt, uprev, u, f, p = integrator
-    @unpack dtprev, order, D, nlsolver, γₖ, dd, atmp, atmpm1, atmpp1, utilde, utildem1, utildep1, ϕ, u₀, step_limiter! = cache
+    @unpack dtprev, order, D, nlsolver, γₖ, dd, residual, atmp, atmpm1, atmpp1, utilde, utildem1, utildep1, ϕ, u₀, step_limiter! = cache
     alg = unwrap_alg(integrator, true)
 
     if integrator.u_modified
@@ -923,6 +923,7 @@ function perform_step!(integrator, cache::QNDFCache{max_order},
         else
             calculate_residuals!(atmp, dd, uprev, u, abstol, reltol, internalnorm, t)
         end
+        residual .= atmp
         integrator.EEst = error_constant(integrator, k) * internalnorm(atmp, t)
         if k > 1
             @views calculate_residuals!(

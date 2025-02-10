@@ -409,6 +409,7 @@ end
     dtprev::dtType
     nconsteps::Int ##Successful consecutive step with the same step size
     consfailcnt::Int #Consecutive failed steps count
+    residual::uNoUnitsType
     EEst1::EEstType #Error Estimator for k-1 order
     EEst2::EEstType #Error Estimator for k+1 order
     γₖ::gammaType
@@ -446,6 +447,7 @@ function alg_cache(alg::QNDF{MO}, u, rate_prototype, ::Type{uEltypeNoUnits},
     atmpm1 = zero(similar(u, uEltypeNoUnits))
     atmpp1 = zero(similar(u, uEltypeNoUnits))
     tmp2 = zero(u)
+    residual = similar(u, uEltypeNoUnits)
     EEst1 = tTypeNoUnits(1)
     EEst2 = tTypeNoUnits(1)
 
@@ -462,7 +464,7 @@ function alg_cache(alg::QNDF{MO}, u, rate_prototype, ::Type{uEltypeNoUnits},
     γₖ = SVector(ntuple(k -> sum(tTypeNoUnits(1 // j) for j in 1:k), Val(max_order)))
 
     QNDFCache(fsalfirst, dd, utilde, utildem1, utildep1, ϕ, u₀, nlsolver, U, RU, D, Dtmp,
-        tmp2, prevD, 1, 1, Val(max_order), dtprev, 0, 0, EEst1, EEst2, γₖ, atmp,
+        tmp2, prevD, 1, 1, Val(max_order), dtprev, 0, 0, residual, EEst1, EEst2, γₖ, atmp,
         atmpm1, atmpp1, alg.step_limiter!)
 end
 
