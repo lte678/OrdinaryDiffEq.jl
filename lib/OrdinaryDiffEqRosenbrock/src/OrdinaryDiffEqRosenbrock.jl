@@ -13,7 +13,7 @@ import OrdinaryDiffEqCore: alg_order, alg_adaptive_order, isWmethod, isfsal, _un
                            calculate_residuals, has_stiff_interpolation, ODEIntegrator,
                            resize_non_user_cache!, _ode_addsteps!, full_cache,
                            DerivativeOrderNotPossibleError, _bool_to_ADType,
-                           _process_AD_choice
+                           _process_AD_choice, LinearAliasSpecifier
 using MuladdMacro, FastBroadcast, RecursiveArrayTools
 import MacroTools
 using MacroTools: @capture
@@ -51,7 +51,7 @@ function rosenbrock_wolfbrandt_docstring(description::String,
     standardtag = Val{true}(),
     autodiff = AutoForwardDiff(),
     concrete_jac = nothing,
-    diff_type = Val{:central},
+    diff_type = Val{:forward}(),
     linsolve = nothing,
     precs = DEFAULT_PRECS,
     """ * extra_keyword_default

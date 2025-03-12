@@ -7,11 +7,12 @@ import SciMLBase: init, solve, solve!, remake
 using SciMLBase: DAEFunction, DEIntegrator, NonlinearFunction, NonlinearProblem,
                  NonlinearLeastSquaresProblem, LinearProblem, ODEProblem, DAEProblem,
                  update_coefficients!, get_tmp_cache, AbstractSciMLOperator, ReturnCode,
-                 AbstractNonlinearProblem
+                 AbstractNonlinearProblem, LinearAliasSpecifier
 import DiffEqBase
 import PreallocationTools
 using SimpleNonlinearSolve: SimpleTrustRegion, SimpleGaussNewton
-using NonlinearSolve: FastShortcutNonlinearPolyalg, FastShortcutNLLSPolyalg, NewtonRaphson, step!
+using NonlinearSolve: FastShortcutNonlinearPolyalg, FastShortcutNLLSPolyalg, NewtonRaphson,
+                      step!
 using MuladdMacro, FastBroadcast
 import FastClosures: @closure
 using LinearAlgebra: UniformScaling, UpperTriangular

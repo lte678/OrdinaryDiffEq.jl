@@ -112,14 +112,14 @@ struct ABDF2{CS, AD, F, F2, P, FDT, ST, CJ, K, T, StepLimiter} <:
     step_limiter!::StepLimiter
     autodiff::AD
 end
-function ABDF2(; chunk_size = Val{0}(), autodiff = AutoForwardDiff(), standardtag = Val{true}(),
+function ABDF2(;
+        chunk_size = Val{0}(), autodiff = AutoForwardDiff(), standardtag = Val{true}(),
         concrete_jac = nothing, diff_type = Val{:forward}(),
         κ = nothing, tol = nothing, linsolve = nothing, precs = DEFAULT_PRECS,
         nlsolve = NLNewton(),
         smooth_est = true, extrapolant = :linear,
         controller = :Standard, step_limiter! = trivial_limiter!)
-
-    AD_choice = _process_AD_choice(autodiff, chunk_size, diff_type)
+    AD_choice, chunk_size, diff_type = _process_AD_choice(autodiff, chunk_size, diff_type)
 
     ABDF2{
         _unwrap_val(chunk_size), typeof(AD_choice), typeof(linsolve), typeof(nlsolve),
@@ -177,8 +177,7 @@ function SBDF(order; chunk_size = Val{0}(), autodiff = AutoForwardDiff(),
         linsolve = nothing, precs = DEFAULT_PRECS, nlsolve = NLNewton(), κ = nothing,
         tol = nothing,
         extrapolant = :linear, ark = false)
-
-    AD_choice = _process_AD_choice(autodiff, chunk_size, diff_type)
+    AD_choice, chunk_size, diff_type = _process_AD_choice(autodiff, chunk_size, diff_type)
 
     SBDF{_unwrap_val(chunk_size), typeof(AD_choice), typeof(linsolve), typeof(nlsolve),
         typeof(precs), diff_type, _unwrap_val(standardtag), _unwrap_val(concrete_jac),
@@ -194,14 +193,14 @@ function SBDF(order; chunk_size = Val{0}(), autodiff = AutoForwardDiff(),
 end
 
 # All keyword form needed for remake
-function SBDF(; chunk_size = Val{0}(), autodiff = AutoForwardDiff(), standardtag = Val{true}(),
+function SBDF(;
+        chunk_size = Val{0}(), autodiff = AutoForwardDiff(), standardtag = Val{true}(),
         concrete_jac = nothing, diff_type = Val{:forward}(),
         linsolve = nothing, precs = DEFAULT_PRECS, nlsolve = NLNewton(), κ = nothing,
         tol = nothing,
         extrapolant = :linear,
         order, ark = false)
-
-    AD_choice = _process_AD_choice(autodiff, chunk_size, diff_type)
+    AD_choice, chunk_size, diff_type = _process_AD_choice(autodiff, chunk_size, diff_type)
 
     SBDF{_unwrap_val(chunk_size), typeof(AD_choice), typeof(linsolve), typeof(nlsolve),
         typeof(precs), diff_type, _unwrap_val(standardtag), _unwrap_val(concrete_jac),
@@ -301,13 +300,13 @@ struct QNDF1{CS, AD, F, F2, P, FDT, ST, CJ, κType, StepLimiter} <:
     autodiff::AD
 end
 
-function QNDF1(; chunk_size = Val{0}(), autodiff = AutoForwardDiff(), standardtag = Val{true}(),
+function QNDF1(;
+        chunk_size = Val{0}(), autodiff = AutoForwardDiff(), standardtag = Val{true}(),
         concrete_jac = nothing, diff_type = Val{:forward}(),
         linsolve = nothing, precs = DEFAULT_PRECS, nlsolve = NLNewton(),
         extrapolant = :linear, kappa = -37 // 200,
         controller = :Standard, step_limiter! = trivial_limiter!)
-
-    AD_choice = _process_AD_choice(autodiff, chunk_size, diff_type)
+    AD_choice, chunk_size, diff_type = _process_AD_choice(autodiff, chunk_size, diff_type)
 
     QNDF1{
         _unwrap_val(chunk_size), typeof(AD_choice), typeof(linsolve), typeof(nlsolve),
@@ -361,13 +360,13 @@ struct QNDF2{CS, AD, F, F2, P, FDT, ST, CJ, κType, StepLimiter} <:
     autodiff::AD
 end
 
-function QNDF2(; chunk_size = Val{0}(), autodiff = AutoForwardDiff(), standardtag = Val{true}(),
+function QNDF2(;
+        chunk_size = Val{0}(), autodiff = AutoForwardDiff(), standardtag = Val{true}(),
         concrete_jac = nothing, diff_type = Val{:forward}(),
         linsolve = nothing, precs = DEFAULT_PRECS, nlsolve = NLNewton(),
         extrapolant = :linear, kappa = -1 // 9,
         controller = :Standard, step_limiter! = trivial_limiter!)
-
-    AD_choice = _process_AD_choice(autodiff, chunk_size, diff_type)
+    AD_choice, chunk_size, diff_type = _process_AD_choice(autodiff, chunk_size, diff_type)
 
     QNDF2{
         _unwrap_val(chunk_size), typeof(AD_choice), typeof(linsolve), typeof(nlsolve),
@@ -437,8 +436,7 @@ function QNDF(; max_order::Val{MO} = Val{5}(), chunk_size = Val{0}(),
         extrapolant = :linear, kappa = (
             -37 // 200, -1 // 9, -823 // 10000, -83 // 2000, 0 // 1),
         controller = :Standard, step_limiter! = trivial_limiter!) where {MO}
-
-    AD_choice = _process_AD_choice(autodiff, chunk_size, diff_type)
+    AD_choice, chunk_size, diff_type = _process_AD_choice(autodiff, chunk_size, diff_type)
 
     QNDF{MO, _unwrap_val(chunk_size), typeof(AD_choice), typeof(linsolve),
         typeof(nlsolve), typeof(precs), diff_type, _unwrap_val(standardtag),
@@ -479,12 +477,12 @@ struct MEBDF2{CS, AD, F, F2, P, FDT, ST, CJ} <:
     extrapolant::Symbol
     autodiff::AD
 end
-function MEBDF2(; chunk_size = Val{0}(), autodiff = AutoForwardDiff(), standardtag = Val{true}(),
+function MEBDF2(;
+        chunk_size = Val{0}(), autodiff = AutoForwardDiff(), standardtag = Val{true}(),
         concrete_jac = nothing, diff_type = Val{:forward}(),
         linsolve = nothing, precs = DEFAULT_PRECS, nlsolve = NLNewton(),
         extrapolant = :constant)
-
-    AD_choice = _process_AD_choice(autodiff, chunk_size, diff_type)
+    AD_choice, chunk_size, diff_type = _process_AD_choice(autodiff, chunk_size, diff_type)
 
     MEBDF2{_unwrap_val(chunk_size), typeof(AD_choice), typeof(linsolve),
         typeof(nlsolve), typeof(precs), diff_type, _unwrap_val(standardtag),
@@ -543,8 +541,7 @@ function FBDF(; max_order::Val{MO} = Val{5}(), chunk_size = Val{0}(),
         linsolve = nothing, precs = DEFAULT_PRECS, nlsolve = NLNewton(), κ = nothing,
         tol = nothing,
         extrapolant = :linear, controller = :Standard, step_limiter! = trivial_limiter!) where {MO}
-
-    AD_choice = _process_AD_choice(autodiff, chunk_size, diff_type)
+    AD_choice, chunk_size, diff_type = _process_AD_choice(autodiff, chunk_size, diff_type)
 
     FBDF{MO, _unwrap_val(chunk_size), typeof(AD_choice), typeof(linsolve),
         typeof(nlsolve), typeof(precs), diff_type, _unwrap_val(standardtag),
@@ -662,8 +659,7 @@ function DImplicitEuler(;
         linsolve = nothing, precs = DEFAULT_PRECS, nlsolve = NLNewton(),
         extrapolant = :constant,
         controller = :Standard)
-
-    AD_choice = _process_AD_choice(autodiff, chunk_size, diff_type)
+    AD_choice, chunk_size, diff_type = _process_AD_choice(autodiff, chunk_size, diff_type)
 
     DImplicitEuler{_unwrap_val(chunk_size), typeof(AD_choice), typeof(linsolve),
         typeof(nlsolve), typeof(precs), diff_type, _unwrap_val(standardtag),
@@ -699,13 +695,13 @@ struct DABDF2{CS, AD, F, F2, P, FDT, ST, CJ} <: DAEAlgorithm{CS, AD, FDT, ST, CJ
     controller::Symbol
     autodiff::AD
 end
-function DABDF2(; chunk_size = Val{0}(), autodiff = AutoForwardDiff(), standardtag = Val{true}(),
+function DABDF2(;
+        chunk_size = Val{0}(), autodiff = AutoForwardDiff(), standardtag = Val{true}(),
         concrete_jac = nothing, diff_type = Val{:forward}(),
         linsolve = nothing, precs = DEFAULT_PRECS, nlsolve = NLNewton(),
         extrapolant = :constant,
         controller = :Standard)
-
-    AD_choice = _process_AD_choice(autodiff, chunk_size, diff_type)
+    AD_choice, chunk_size, diff_type = _process_AD_choice(autodiff, chunk_size, diff_type)
 
     DABDF2{_unwrap_val(chunk_size), typeof(AD_choice), typeof(linsolve),
         typeof(nlsolve), typeof(precs), diff_type, _unwrap_val(standardtag),
@@ -768,8 +764,7 @@ function DFBDF(; max_order::Val{MO} = Val{5}(), chunk_size = Val{0}(),
         linsolve = nothing, precs = DEFAULT_PRECS, nlsolve = NLNewton(), κ = nothing,
         tol = nothing,
         extrapolant = :linear, controller = :Standard) where {MO}
-
-    AD_choice = _process_AD_choice(autodiff, chunk_size, diff_type)
+    AD_choice, chunk_size, diff_type = _process_AD_choice(autodiff, chunk_size, diff_type)
 
     DFBDF{MO, _unwrap_val(chunk_size), typeof(AD_choice), typeof(linsolve),
         typeof(nlsolve), typeof(precs), diff_type, _unwrap_val(standardtag),
